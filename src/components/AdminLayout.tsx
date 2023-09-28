@@ -1,41 +1,54 @@
-import { AppShell, Group, Burger, ScrollArea, Skeleton, Stack, Card } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import Link from 'next/link';
+import { AppShell, Burger, Aside, Footer, Header, MediaQuery, Navbar, useMantineTheme, Text } from '@mantine/core';
+import { useState } from 'react';
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const [opened, { toggle }] = useDisclosure();
-
+  const theme = useMantineTheme();
+  const [opened, setOpened] = useState(false);
   return (
     <AppShell
-      header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
-      padding="md"
+      styles={{
+        main: {
+          background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
+        },
+      }}
+      navbarOffsetBreakpoint="sm"
+      asideOffsetBreakpoint="sm"
+      navbar={
+        <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 200, lg: 300 }}>
+          <Text>Application navbar</Text>
+        </Navbar>
+      }
+      aside={
+        <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
+          <Aside p="md" hiddenBreakpoint="sm" width={{ sm: 200, lg: 300 }}>
+            <Text>Application sidebar</Text>
+          </Aside>
+        </MediaQuery>
+      }
+      footer={
+        <Footer height={60} p="md">
+          Application footer
+        </Footer>
+      }
+      header={
+        <Header height={{ base: 50, md: 70 }} p="md">
+          <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+            <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+              <Burger
+                opened={opened}
+                onClick={() => setOpened((o) => !o)}
+                size="sm"
+                color={theme.colors.gray[6]}
+                mr="xl"
+              />
+            </MediaQuery>
+
+            <Text>Application header</Text>
+          </div>
+        </Header>
+      }
     >
-      <AppShell.Header>
-        <Group h="100%" px="md">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <Link href="/" className="w-min">
-            <a className="text-2xl font-bold">Mantine Next.js</a>
-          </Link>
-        </Group>
-      </AppShell.Header>
-      <AppShell.Navbar p="md">
-        <AppShell.Section>Navbar header</AppShell.Section>
-        <AppShell.Section grow my="md" component={ScrollArea}>
-          60 links in a scrollable section
-          {Array(60)
-            .fill(0)
-            .map((_, index) => (
-              <Skeleton key={index} h={28} mt="sm" animate={false} />
-            ))}
-        </AppShell.Section>
-        <AppShell.Section>Navbar footer – always at the bottom</AppShell.Section>
-      </AppShell.Navbar>
-      <AppShell.Main>
-        <Stack gap="md" justify="center">
-          <Card withBorder>{children}</Card>
-        </Stack>
-      </AppShell.Main>
+      {children}
     </AppShell>
   );
 };

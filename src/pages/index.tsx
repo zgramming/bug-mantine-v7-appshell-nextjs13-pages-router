@@ -1,9 +1,9 @@
 import AdminLayout from '@/components/AdminLayout';
 import { Stack } from '@mantine/core';
 
-// Page.getLayout = function getLayout(page: any) {
-//   return <AdminLayout>{page}</AdminLayout>;
-// };
+Page.getLayout = function getLayout(page: any) {
+  return <AdminLayout>{page}</AdminLayout>;
+};
 
 export default function Page() {
   return (
